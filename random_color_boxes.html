@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Random Colors</title>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+			display: flex;
+			justify-content: center;
+			background-color: black;
+		}
+
+		.container {
+			display: flex;
+			width: 75%;
+			max-width: 1000px;
+			align-items: center;
+			justify-content: space-around;
+			height: 100vh;
+		}
+
+		.color-box {
+			width: 200px;
+			height: 200px;
+			border-radius: 7%;
+			transition: all 5s;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="color-box"></div>
+		<div class="color-box"></div>
+		<div class="color-box"></div>
+		<div class="color-box"></div>
+	</div>
+
+	<script>
+		const colorBox = document.querySelectorAll('.color-box');
+
+		function changeColor(obj) {
+			const red = getRandomNumber(0,256)
+			const green = getRandomNumber(0,256)
+			const blue = getRandomNumber(0,256)
+			obj.style.transitionDuration = `${getRandomNumber(10,101) * 0.1}s`;
+			obj.style.backgroundColor = `rgb(${red},${green},${blue}`;
+			obj.addEventListener('transitionend', function() { changeColor(obj) });
+		}
+		
+		function getRandomNumber(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min)) + min;
+		}
+
+		function startBoxColorChange() {
+			colorBox.forEach( box => changeColor(box));
+		}
+
+		window.setTimeout( function() {
+			startBoxColorChange();
+		}, 500);
+	</script>
+</body>
+</html>

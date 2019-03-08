@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gradient Transitions!</title>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+			height: 100vh;
+		}
+
+		.background-box {
+			width: 100%;
+			height: 100vh;
+			position: absolute;
+		}
+
+		.fades {
+			transition: opacity 2s;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="four-corners">
+			<div class="corner">
+				<div class="background-box" data-corner-number="1"></div>
+			</div>
+			<div class="corner">
+				<div class="background-box" data-corner-number="2"></div>
+			</div>
+			<div class="corner">
+				<div class="background-box" data-corner-number="3"></div>
+			</div>
+			<div class="corner">
+				<div class="background-box" data-corner-number="4"></div>
+			</div>
+			
+		</div>
+	</div>
+
+	<script>
+		const cornerPairs = document.querySelectorAll('.corner')
+		const cornerKey = {
+			1: "top left",
+			2: "top right",
+			3: "bottom left",
+			4: "bottom right"
+		}
+
+		cornerPieces = document.querySelectorAll('.box')
+
+		cornerPieces.forEach( box => {
+			getNewGradient(box);
+		});
+		
+		function changeCorner(pair) {
+			function recallSelf() {
+				pair.firstElementChild.classList.remove('fades');
+				pair.lastElementChild.remove();
+				changeCorner(pair);
+			}
+
+			function setUpNodes() {
+				const a = pair.firstElementChild;
+				getNewTransitionTime(a);
+				const clone = a.cloneNode(true);
+				getNewGradient(clone);
+				clone.style.opacity = "0"
+				pair.prepend(clone);
+				a.classList.add('fades');
+				clone.classList.add('fades');
+				a.addEventListener('transitionend', function() {recallSelf(pair)})
+				return pair;
+			}
+
+			function fade() {
+				pair.firstElementChild.style.opacity = "1";
+				pair.lastElementChild.style.opacity = "0";
+				return pair;
+			}
+
+			const readyToFade = setUpNodes();
+			window.setTimeout( function() {
+				fade();
+			}, 5);		
+		}
+
+		function changeOrder(pair) {
+			pair.appendChild(pair.firstElementChild);
+		}
+
+		function getNewGradient(obj) {
+			const red = getRandomNumber(0,256);
+			const green = getRandomNumber(0,256);
+			const blue = getRandomNumber(0,256);
+			gradient = `radial-gradient(circle at ${cornerKey[obj.dataset.cornerNumber]}, rgba(${red},${green},${blue},1), rgba(${red},${green},${blue},0))`
+			obj.style.backgroundImage = gradient;
+		}
+
+		function getNewTransitionTime(obj) {
+			obj.style.transitionDuration = `${getRandomNumber(1,101) * 0.1}s`;
+		}
+		
+		function getRandomNumber(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min)) + min;
+		}
+
+		function startCornerColorChange() {
+			cornerPairs.forEach( box => changeCorner(box));
+		}
+
+		window.setTimeout( function() {
+			startCornerColorChange();
+		}, 50);
+	</script>
+</body>
+</html>
